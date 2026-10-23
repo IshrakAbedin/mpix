@@ -1,6 +1,6 @@
 # mpix
 
-**M**anaged **Pix**els: a small C++20 library for loading, editing, resizing and
+**M**anaged **Pix**els: a small C++20 library for loading, editing, resizing, and
 saving 8-bit images, built on [stb](https://github.com/nothings/stb).
 
 - Grayscale (`L`), grayscale + alpha (`LA`), `RGB` and `RGBA` images
@@ -55,12 +55,12 @@ include(FetchContent)
 FetchContent_Declare(
     mpix
     GIT_REPOSITORY https://github.com/IshrakAbedin/mpix.git
-    GIT_TAG        main
+    GIT_TAG        <TAG VERSON> # e.g., v0.1.1
 )
 FetchContent_MakeAvailable(mpix)
 
 # or CPM
-CPMAddPackage("gh:IshrakAbedin/mpix@main")
+CPMAddPackage("gh:IshrakAbedin/mpix@<version>") #e.g., mpix@0.1.1
 
 target_link_libraries(my_app PRIVATE mpix::mpix)
 ```

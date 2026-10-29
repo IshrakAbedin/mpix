@@ -1614,6 +1614,17 @@ TEST_CASE("Image::Resize: L is averaged in linear light", "[image][resize][l]")
     CHECK(std::abs(out.Pixel(0, 0).L - 188) <= 3);
 }
 
+TEST_CASE("Image::Resize: LA alpha is filtered linearly", "[image][resize][la]")
+{
+    mpix::Image<mpix::ColorFormat::LA> src{2, 2, mpix::ColorLA{50, 0}};
+    src.Pixel(0, 1).A = 255;
+    src.Pixel(1, 0).A = 255;
+
+    const auto out = src.Resize(1, 1);
+    CHECK(std::abs(out.Pixel(0, 0).A - 128) <= 3);
+    CHECK(std::abs(out.Pixel(0, 0).L - 50) <= 2);
+}
+
 TEMPLATE_TEST_CASE_SIG(
     "Image::Write: every file format works for every colour format",
     "[image][io]", ((ColorFormat F), F), ColorFormat::L, ColorFormat::LA,
@@ -1791,8 +1802,9 @@ TEST_CASE("Concurrent Write / VFlip / read are safe", "[image][thread]")
 // Defined in odr_tu.cpp: a second TU including mpix.hpp.
 int mpix_odr_probe();
 
-TEST_CASE("Header can be included from several translation units",
-          "[image][odr]")
+TEST_CASE(
+    "Header can be included from several translation units", "[image][odr]"
+)
 {
     CHECK(mpix_odr_probe() == 6);
 }

@@ -26,6 +26,25 @@ enum class ColorFormat
     RGBA = 4 // RGB wit alpha
 };
 
+/// Converts ColorFormat to equivalent stbi pixel layout for resizing
+[[nodiscard]] constexpr stbir_pixel_layout color_format_to_pixel_layout(
+    ColorFormat f
+) noexcept
+{
+    switch (f)
+    {
+        case ColorFormat::L:
+            return STBIR_1CHANNEL;
+        case ColorFormat::LA:
+            return STBIR_RA;
+        case ColorFormat::RGB:
+            return STBIR_RGB;
+        case ColorFormat::RGBA:
+            return STBIR_RGBA;
+    }
+    return STBIR_1CHANNEL;
+}
+
 // Base template class for Color, intentionally undefined.
 // Each specialization is a tightly packed pixel of 8-bit channels.
 template <ColorFormat F> struct Color;
@@ -181,7 +200,7 @@ template <ColorFormat F = ColorFormat::RGB> class Image
     {
         Image<F> resized{target_height, target_width, true};
 
-        stbir_pixel_layout layout = static_cast<stbir_pixel_layout>(F);
+        constexpr stbir_pixel_layout layout = color_format_to_pixel_layout(F);
 
         auto result = stbir_resize_uint8_srgb(
             reinterpret_cast<const uint8_t*>(_buffer.data()),
